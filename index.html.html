@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 早教協會春酒滿意度調查分析報告</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue-dark:  #1a3a5c;
+    --blue-mid:   #2563a8;
+    --blue-light: #dbeafe;
+    --green:      #16a34a;
+    --green-bg:   #dcfce7;
+    --yellow:     #ca8a04;
+    --yellow-bg:  #fef9c3;
+    --red:        #dc2626;
+    --red-bg:     #fee2e2;
+    --gray-100:   #f3f4f6;
+    --gray-200:   #e5e7eb;
+    --gray-600:   #4b5563;
+    --gray-800:   #1f2937;
+    --radius:     12px;
+    --shadow:     0 4px 20px rgba(0,0,0,.08);
+    --shadow-lg:  0 8px 32px rgba(0,0,0,.12);
+  }
+
+  body {
+    font-family: 'Noto Sans TC', 'Arial', sans-serif;
+    background: #f0f4f8;
+    color: var(--gray-800);
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #1a3a5c 0%, #2563a8 50%, #1e40af 100%);
+    color: #fff;
+    padding: 56px 40px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 999px;
+    padding: 4px 16px;
+    font-size: 13px;
+    letter-spacing: .5px;
+    margin-bottom: 16px;
+  }
+  .hero h1 { font-size: clamp(22px, 4vw, 36px); font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+  .hero p  { font-size: 15px; opacity: .8; }
+
+  /* ── KPI 卡片 ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    padding: 32px 40px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .kpi-card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border-top: 4px solid var(--blue-mid);
+    transition: transform .2s;
+  }
+  .kpi-card:hover { transform: translateY(-3px); }
+  .kpi-card.green { border-top-color: var(--green); }
+  .kpi-card.yellow{ border-top-color: var(--yellow);}
+  .kpi-card.red   { border-top-color: var(--red);  }
+  .kpi-icon { font-size: 28px; margin-bottom: 8px; }
+  .kpi-val  { font-size: 32px; font-weight: 700; color: var(--blue-dark); line-height: 1; }
+  .kpi-card.green .kpi-val  { color: var(--green); }
+  .kpi-card.yellow .kpi-val { color: var(--yellow); }
+  .kpi-card.red    .kpi-val { color: var(--red);   }
+  .kpi-unit { font-size: 12px; color: var(--gray-600); margin-top: 4px; }
+  .kpi-label{ font-size: 13px; font-weight: 600; color: var(--gray-600); margin-top: 8px; }
+
+  /* ── SECTION ── */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 40px 60px; }
+  .section { margin-top: 40px; }
+  .section-title {
+    font-size: 18px; font-weight: 700; color: var(--blue-dark);
+    border-left: 5px solid var(--blue-mid);
+    padding-left: 14px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title span { font-size: 22px; }
+
+  /* ── 卡片容器 ── */
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 700; color: var(--blue-mid);
+    margin-bottom: 16px; padding-bottom: 10px;
+    border-bottom: 2px solid var(--blue-light);
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* ── CHART GRID ── */
+  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .chart-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .chart-wrap { position: relative; height: 260px; }
+
+  /* ── 服務評估表 ── */
+  .service-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .service-table th {
+    background: var(--blue-dark); color: #fff;
+    padding: 10px 14px; text-align: center; font-weight: 600;
+  }
+  .service-table th:first-child { text-align: left; border-radius: 6px 0 0 0; }
+  .service-table th:last-child  { border-radius: 0 6px 0 0; }
+  .service-table td { padding: 10px 14px; border-bottom: 1px solid var(--gray-200); }
+  .service-table tr:last-child td { border-bottom: none; }
+  .service-table tr:nth-child(even) td { background: var(--gray-100); }
+  .service-table td:not(:first-child) { text-align: center; }
+
+  /* ── 進度條 ── */
+  .bar-row { margin-bottom: 14px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+  .bar-label strong { color: var(--gray-800); }
+  .bar-label span   { color: var(--gray-600); }
+  .bar-track { height: 10px; background: var(--gray-200); border-radius: 999px; overflow: hidden; }
+  .bar-fill  { height: 100%; border-radius: 999px; transition: width .6s ease; }
+  .bar-fill.blue   { background: linear-gradient(90deg, #2563a8, #60a5fa); }
+  .bar-fill.green  { background: linear-gradient(90deg, #16a34a, #4ade80); }
+  .bar-fill.orange { background: linear-gradient(90deg, #ea580c, #fb923c); }
+  .bar-fill.purple { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+  .bar-fill.teal   { background: linear-gradient(90deg, #0d9488, #2dd4bf); }
+
+  /* ── 標籤式排行 ── */
+  .rank-list { list-style: none; }
+  .rank-list li {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--gray-200);
+    font-size: 13px;
+  }
+  .rank-list li:last-child { border-bottom: none; }
+  .rank-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--blue-mid); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .rank-num.gold   { background: #f59e0b; }
+  .rank-num.silver { background: #9ca3af; }
+  .rank-num.bronze { background: #b45309; }
+  .rank-name { flex: 1; font-weight: 500; }
+  .rank-cnt  { font-weight: 700; color: var(--blue-mid); min-width: 36px; text-align: right; }
+  .rank-pct  { font-size: 11px; color: var(--gray-600); min-width: 44px; text-align: right; }
+
+  /* ── 滿意度彩虹條 ── */
+  .sat-strip { display: flex; border-radius: 8px; overflow: hidden; margin: 16px 0; height: 36px; }
+  .sat-seg   { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; transition: flex .6s; }
+
+  /* ── 優先排序卡 ── */
+  .priority-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .priority-card {
+    border-radius: 10px; padding: 14px 16px;
+    border: 1px solid var(--gray-200);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .priority-score {
+    font-size: 28px; font-weight: 700; line-height: 1;
+    flex-shrink: 0; min-width: 52px; text-align: center;
+  }
+  .priority-info strong { font-size: 13px; display: block; }
+  .priority-info small  { font-size: 11px; color: var(--gray-600); }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-block; border-radius: 999px;
+    padding: 2px 10px; font-size: 11px; font-weight: 600;
+  }
+  .badge.green  { background: var(--green-bg);  color: var(--green); }
+  .badge.yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .badge.red    { background: var(--red-bg);    color: var(--red); }
+  .badge.blue   { background: var(--blue-light); color: var(--blue-mid); }
+
+  /* ── 建議區塊 ── */
+  .suggestion-block { margin-top: 20px; }
+  .sug-category {
+    font-size: 13px; font-weight: 700; color: var(--blue-dark);
+    margin: 16px 0 8px; display: flex; align-items: center; gap: 6px;
+  }
+  .sug-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 12px; border-radius: 8px;
+    background: var(--gray-100); margin-bottom: 6px; font-size: 13px;
+  }
+  .sug-item::before { content: '•'; color: var(--blue-mid); font-weight: 700; flex-shrink: 0; }
+
+  /* ── 正面回饋 ── */
+  .quote-scroll {
+    max-height: 520px;
+    overflow-y: auto;
+    padding-right: 6px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-content: start;
+  }
+  .quote-scroll::-webkit-scrollbar { width: 6px; }
+  .quote-scroll::-webkit-scrollbar-track { background: var(--gray-100); border-radius: 4px; }
+  .quote-scroll::-webkit-scrollbar-thumb { background: #93c5fd; border-radius: 4px; }
+  .quote-card {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-left: 4px solid var(--blue-mid);
+    border-radius: 8px; padding: 12px 14px;
+    font-size: 12.5px; color: var(--gray-800);
+    line-height: 1.65;
+    break-inside: avoid;
+  }
+  .quote-count-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--blue-light); color: var(--blue-mid);
+    border-radius: 999px; padding: 4px 14px;
+    font-size: 13px; font-weight: 600; margin-bottom: 14px;
+  }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--blue-dark); color: rgba(255,255,255,.6);
+    text-align: center; padding: 24px;
+    font-size: 12px; margin-top: 40px;
+  }
+
+  @media (max-width: 768px) {
+    .kpi-grid, .chart-grid, .chart-grid.three,
+    .priority-grid, .quote-grid { grid-template-columns: 1fr 1fr; }
+    .container, .kpi-grid { padding-left: 16px; padding-right: 16px; }
+    .hero { padding: 40px 16px 32px; }
+  }
+  @media (max-width: 480px) {
+    .kpi-grid, .chart-grid, .chart-grid.three,
+    .priority-grid, .quote-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">📊 問卷分析報告</div>
+  <h1>2026 早教協會春酒滿意度調查</h1>
+  <p>調查期間：2026 年 3 月 ／ 回覆單位：42 個 ／ 有效問卷：377 份</p>
+</div>
+
+<!-- KPI -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-icon">📋</div>
+    <div class="kpi-val">377</div>
+    <div class="kpi-unit">份有效問卷</div>
+    <div class="kpi-label">總回覆數</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-icon">⭐</div>
+    <div class="kpi-val">4.16</div>
+    <div class="kpi-unit">/ 5.0 分</div>
+    <div class="kpi-label">整體平均滿意度</div>
+  </div>
+  <div class="kpi-card green">
+    <div class="kpi-icon">😊</div>
+    <div class="kpi-val">78%</div>
+    <div class="kpi-unit">295 人選 4-5 星</div>
+    <div class="kpi-label">高滿意比例</div>
+  </div>
+  <div class="kpi-card yellow">
+    <div class="kpi-icon">😐</div>
+    <div class="kpi-val">18%</div>
+    <div class="kpi-unit">68 人選 3 星</div>
+    <div class="kpi-label">中立比例</div>
+  </div>
+  <div class="kpi-card red">
+    <div class="kpi-icon">😟</div>
+    <div class="kpi-val">4%</div>
+    <div class="kpi-unit">14 人選 1-2 星</div>
+    <div class="kpi-label">低滿意比例</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-icon">🏢</div>
+    <div class="kpi-val">42</div>
+    <div class="kpi-unit">個托育單位</div>
+    <div class="kpi-label">參與單位數</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ── SECTION 1：整體滿意度 ── -->
+  <div class="section">
+    <div class="section-title"><span>⭐</span> 整體滿意度分析</div>
+    <div class="card">
+      <div class="card-title">📈 各星級分佈（總計 377 人）</div>
+
+      <!-- 彩虹條 -->
+      <div class="sat-strip" id="satStrip">
+        <div class="sat-seg" style="flex:3; background:#ef4444;" title="1星 3人">1★ 0.8%</div>
+        <div class="sat-seg" style="flex:11; background:#f97316;" title="2星 11人">2★ 2.9%</div>
+        <div class="sat-seg" style="flex:68; background:#eab308;" title="3星 68人">3★ 18%</div>
+        <div class="sat-seg" style="flex:146; background:#22c55e;" title="4星 146人">4★ 38.7%</div>
+        <div class="sat-seg" style="flex:149; background:#16a34a;" title="5星 149人">5★ 39.5%</div>
+      </div>
+
+      <div class="chart-grid" style="margin-top:20px;">
+        <div class="card-title" style="margin:0;align-self:center;grid-column:span 2;border:none;padding-bottom:0;font-size:13px;color:var(--gray-600);">
+          ← 整體趨勢以高分（4-5星）為主，低分（1-2星）佔比僅 3.7%，顯示活動整體獲得認可
+        </div>
+      </div>
+
+      <div class="chart-wrap" style="height:220px; margin-top:16px;">
+        <canvas id="satChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 2：餐廳服務 ── -->
+  <div class="section">
+    <div class="section-title"><span>🍽️</span> 餐廳服務評估</div>
+    <div class="card">
+      <div class="card-title">各服務面向符合度</div>
+      <div class="chart-wrap" style="height:300px;">
+        <canvas id="serviceChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">符合 / 無意見 / 不符合 明細表</div>
+      <table class="service-table">
+        <thead>
+          <tr>
+            <th>服務項目</th>
+            <th>✅ 符合</th>
+            <th>符合率</th>
+            <th>😐 無意見</th>
+            <th>❌ 不符合</th>
+            <th>不符合率</th>
+            <th>評估</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>整體用餐環境</strong></td>
+            <td>315</td><td><span class="badge green">83.6%</span></td>
+            <td>53</td><td>9</td><td><span class="badge green">2.4%</span></td>
+            <td>🏆 最佳</td>
+          </tr>
+          <tr>
+            <td><strong>其他設施（電梯/洗手間）</strong></td>
+            <td>287</td><td><span class="badge green">76.1%</span></td>
+            <td>86</td><td>4</td><td><span class="badge green">1.1%</span></td>
+            <td>✅ 表現優異</td>
+          </tr>
+          <tr>
+            <td><strong>整體服務人員態度</strong></td>
+            <td>283</td><td><span class="badge green">75.1%</span></td>
+            <td>69</td><td>25</td><td><span class="badge yellow">6.6%</span></td>
+            <td>🔶 部分待改善</td>
+          </tr>
+          <tr>
+            <td><strong>上餐服務</strong></td>
+            <td>258</td><td><span class="badge green">68.4%</span></td>
+            <td>81</td><td>38</td><td><span class="badge yellow">10.1%</span></td>
+            <td>⏳ 速度需提升</td>
+          </tr>
+          <tr>
+            <td><strong>菜色</strong></td>
+            <td>227</td><td><span class="badge yellow">60.2%</span></td>
+            <td>96</td><td>54</td><td><span class="badge red">14.3%</span></td>
+            <td>⚠️ 需改善</td>
+          </tr>
+          <tr>
+            <td><strong>停車/消磁服務</strong></td>
+            <td>142</td><td><span class="badge yellow">37.7%</span></td>
+            <td>226</td><td>9</td><td><span class="badge green">2.4%</span></td>
+            <td>ℹ️ 多數不開車</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3：場地條件排序 ── -->
+  <div class="section">
+    <div class="section-title"><span>📍</span> 場地選擇條件優先排序</div>
+    <div class="card">
+      <div class="card-title">平均排名（1 = 最優先，4 = 最後考量）</div>
+      <div class="priority-grid">
+        <div class="priority-card" style="background:#dcfce7; border-color:#16a34a;">
+          <div class="priority-score" style="color:#16a34a;">1.79</div>
+          <div class="priority-info">
+            <strong>🍜 菜色好吃</strong>
+            <small>最受重視，選為第一：89人</small>
+            <br><span class="badge green">★★★★ 最優先</span>
+          </div>
+        </div>
+        <div class="priority-card" style="background:#dbeafe; border-color:#2563a8;">
+          <div class="priority-score" style="color:#2563a8;">1.87</div>
+          <div class="priority-info">
+            <strong>🚌 交通便利</strong>
+            <small>大眾運輸/停車位，選為第一：110人</small>
+            <br><span class="badge blue">★★★★ 非常重視</span>
+          </div>
+        </div>
+        <div class="priority-card" style="background:#fef9c3; border-color:#ca8a04;">
+          <div class="priority-score" style="color:#ca8a04;">1.94</div>
+          <div class="priority-info">
+            <strong>🏃 通勤距離短</strong>
+            <small>選為第一：161人（最多人）</small>
+            <br><span class="badge yellow">★★★☆ 重視</span>
+          </div>
+        </div>
+        <div class="priority-card" style="background:#fee2e2; border-color:#dc2626;">
+          <div class="priority-score" style="color:#dc2626;">3.79</div>
+          <div class="priority-info">
+            <strong>🏨 餐廳環境服務</strong>
+            <small>選為最後考量：227人（最多）</small>
+            <br><span class="badge red">★☆☆☆ 較不重視</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 4：場地布置 ── -->
+  <div class="section">
+    <div class="section-title"><span>🎨</span> 場地布置與互動</div>
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-title">令人驚艷的布置項目（可複選）</div>
+        <ul class="rank-list">
+          <li>
+            <div class="rank-num gold">1</div>
+            <div class="rank-name">📸 春酒邊框照片 — 拍貼機</div>
+            <div class="rank-cnt">297</div>
+            <div class="rank-pct">78.8%</div>
+          </li>
+          <li>
+            <div class="rank-num silver">2</div>
+            <div class="rank-name">🐴 「馳騁金馬」主題背板</div>
+            <div class="rank-cnt">189</div>
+            <div class="rank-pct">50.1%</div>
+          </li>
+          <li>
+            <div class="rank-num bronze">3</div>
+            <div class="rank-name">🪧 2026 專屬合照手拿板</div>
+            <div class="rank-cnt">85</div>
+            <div class="rank-pct">22.5%</div>
+          </li>
+          <li>
+            <div class="rank-num">4</div>
+            <div class="rank-name">🎭 各式角色立牌</div>
+            <div class="rank-cnt">72</div>
+            <div class="rank-pct">19.1%</div>
+          </li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">📌 主要回饋建議</div>
+        <div class="sug-item">拍貼機數量不足，大量排隊等候，建議增設至 2-3 台</div>
+        <div class="sug-item">拍貼機可提早 1 小時架設，讓先到者使用</div>
+        <div class="sug-item">拍照動線與簽到區互相干擾，建議明確分區</div>
+        <div class="sug-item">可考慮租用大型婚禮拍貼機，加快速度</div>
+        <div class="sug-item">各中心餐桌位置圖建議放置於入口</div>
+        <div class="sug-item">燈光偏暗，建議適當調亮</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 5：動線與座位 ── -->
+  <div class="section">
+    <div class="section-title"><span>🚦</span> 簽到動線 & 座位安排</div>
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-title">簽到動線流暢度（1-5 分）</div>
+        <div class="chart-wrap" style="height:220px;">
+          <canvas id="checkinChart"></canvas>
+        </div>
+        <div style="text-align:center; margin-top:12px;">
+          <span style="font-size:22px; font-weight:700; color:var(--blue-mid);">4.13</span>
+          <span style="font-size:13px; color:var(--gray-600);"> / 5.0 平均分</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">桌次座位安排滿意度（1-5 分）</div>
+        <div class="chart-wrap" style="height:220px;">
+          <canvas id="seatChart"></canvas>
+        </div>
+        <div style="text-align:center; margin-top:12px;">
+          <span style="font-size:22px; font-weight:700; color:var(--blue-mid);">4.15</span>
+          <span style="font-size:13px; color:var(--gray-600);"> / 5.0 平均分</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📌 簽到動線改善建議</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <div class="sug-item">依縣市/區域設多個簽到處，減少擁擠</div>
+        <div class="sug-item">導入掃碼電子簽到，加快流程</div>
+        <div class="sug-item">工作人員應熟悉各單位位置，主動引導</div>
+        <div class="sug-item">入口設立明確指引立牌</div>
+        <div class="sug-item">拍貼機排隊與簽到區域需明確分隔</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 6：表演節目 ── -->
+  <div class="section">
+    <div class="section-title"><span>🎭</span> 表演節目與互動遊戲偏好</div>
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-title">希望安排哪些節目（可複選）</div>
+        <div class="chart-wrap" style="height:260px;">
+          <canvas id="showChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">各類型分析</div>
+        <div class="bar-row">
+          <div class="bar-label"><strong>外聘表演團體</strong><span>209 人（55.4%）</span></div>
+          <div class="bar-track"><div class="bar-fill blue" style="width:55.4%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><strong>有獎問答競賽</strong><span>118 人（31.3%）</span></div>
+          <div class="bar-track"><div class="bar-fill green" style="width:31.3%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><strong>不希望安排表演</strong><span>105 人（27.8%）</span></div>
+          <div class="bar-track"><div class="bar-fill orange" style="width:27.8%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><strong>團康遊戲環節</strong><span>84 人（22.3%）</span></div>
+          <div class="bar-track"><div class="bar-fill purple" style="width:22.3%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><strong>中心自行表演</strong><span>15 人（4.0%）</span></div>
+          <div class="bar-track"><div class="bar-fill teal" style="width:4%"></div></div>
+        </div>
+        <div style="margin-top:16px; padding:12px; background:var(--yellow-bg); border-radius:8px; font-size:12px; color:var(--yellow);">
+          ⚠️ 近三成受訪者不希望老師上台表演，建議以外聘/互動為主，減少強制表演要求
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 7：伴手禮與摸彩 ── -->
+  <div class="section">
+    <div class="section-title"><span>🎁</span> 伴手禮 & 摸彩分析</div>
+    <div class="chart-grid">
+      <div class="card">
+        <div class="card-title">伴手禮滿意度</div>
+        <div class="chart-wrap" style="height:220px;">
+          <canvas id="giftChart"></canvas>
+        </div>
+        <div style="margin-top:12px; font-size:12px; color:var(--gray-600); text-align:center;">
+          滿意 169 / 無意見 156 / 不滿意 52
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">伴手禮期許排序（1 = 最重視）</div>
+        <div class="bar-row" style="margin-top:12px;">
+          <div class="bar-label"><strong>🛒 實用性</strong><span>平均 1.14（壓倒性第一）</span></div>
+          <div class="bar-track"><div class="bar-fill green" style="width:95%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><strong>🏅 紀念性</strong><span>平均 3.45</span></div>
+          <div class="bar-track"><div class="bar-fill blue" style="width:30%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><strong>🎒 輕巧</strong><span>平均 3.61</span></div>
+          <div class="bar-track"><div class="bar-fill purple" style="width:22%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><strong>🎀 精美包裝</strong><span>平均 3.79（最不重視）</span></div>
+          <div class="bar-track"><div class="bar-fill orange" style="width:12%"></div></div>
+        </div>
+        <div style="margin-top:14px; padding:12px; background:var(--green-bg); border-radius:8px; font-size:12px; color:var(--green);">
+          ✅ 結論：伴手禮以「實用性」為絕對優先考量，精美外觀不是關鍵
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid" style="margin-top:0;">
+      <div class="card">
+        <div class="card-title">摸彩流程 & 普獎滿意度</div>
+        <div class="chart-wrap" style="height:240px;">
+          <canvas id="raffleChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">普獎 & 大獎期許</div>
+        <div style="margin-bottom:12px;">
+          <div style="font-size:13px; font-weight:600; margin-bottom:8px; color:var(--blue-dark);">普獎期許（希望是什麼？）</div>
+          <ul class="rank-list">
+            <li>
+              <div class="rank-num gold">1</div>
+              <div class="rank-name">🧴 日用消耗品</div>
+              <div class="rank-cnt">150</div>
+              <div class="rank-pct">39.8%</div>
+            </li>
+            <li>
+              <div class="rank-num silver">2</div>
+              <div class="rank-name">😐 無意見</div>
+              <div class="rank-cnt">109</div>
+              <div class="rank-pct">28.9%</div>
+            </li>
+            <li>
+              <div class="rank-num bronze">3</div>
+              <div class="rank-name">🎨 客製化禮品</div>
+              <div class="rank-cnt">97</div>
+              <div class="rank-pct">25.7%</div>
+            </li>
+            <li>
+              <div class="rank-num">4</div>
+              <div class="rank-name">🍱 食品</div>
+              <div class="rank-cnt">21</div>
+              <div class="rank-pct">5.6%</div>
+            </li>
+          </ul>
+        </div>
+        <div style="font-size:13px; font-weight:600; margin-bottom:8px; color:var(--blue-dark);">摸彩大獎期許 Top 5</div>
+        <ul class="rank-list">
+          <li><div class="rank-num gold">1</div><div class="rank-name">✈️ 機票（來回）</div><div class="rank-cnt">26票</div></li>
+          <li><div class="rank-num silver">2</div><div class="rank-name">💰 現金 / 禮金</div><div class="rank-cnt">24票</div></li>
+          <li><div class="rank-num bronze">3</div><div class="rank-name">📱 手機 / 3C</div><div class="rank-cnt">3票</div></li>
+          <li><div class="rank-num">4</div><div class="rank-name">🤖 掃地機器人</div><div class="rank-cnt">3票</div></li>
+          <li><div class="rank-num">5</div><div class="rank-name">💻 筆電</div><div class="rank-cnt">3票</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 8：主要建議彙整 ── -->
+  <div class="section">
+    <div class="section-title"><span>💬</span> 開放式建議彙整</div>
+    <div class="card">
+      <div class="suggestion-block">
+        <div class="sug-category">🍽️ 菜色 / 餐點</div>
+        <div class="sug-item">菜色與去年相同，缺乏新意，希望換餐廳或更新菜單</div>
+        <div class="sug-item">上菜速度慢，致詞期間等待過久，用餐時間被壓縮</div>
+        <div class="sug-item">份量偏少，許多人沒吃飽，建議增加份量</div>
+
+        <div class="sug-category">🎭 節目 / 活動流程</div>
+        <div class="sug-item">整體活動結束太早，節目感不足，建議增加互動或外聘表演</div>
+        <div class="sug-item">可加入 Kahoot 手機互動問答，增加趣味性</div>
+        <div class="sug-item">不要強制老師上台表演，平日工作已相當繁忙</div>
+        <div class="sug-item">2026 兌獎券摸彩方式獲好評，建議保留</div>
+        <div class="sug-item">摸彩獎項數量偏少，希望增加讓人人有獎</div>
+
+        <div class="sug-category">📍 場地 / 辦理形式</div>
+        <div class="sug-item">北部場地對中南部同仁距離過遠，建議分區辦理或輪流至中部舉辦</div>
+        <div class="sug-item">建議改在週六舉辦，避免隔天上班疲憊</div>
+        <div class="sug-item">分區辦理可大幅提升偏遠單位的參與意願</div>
+
+        <div class="sug-category">📋 行政 / 制度面</div>
+        <div class="sug-item">育嬰留停夥伴應可參加（符合工作滿一年條件）</div>
+        <div class="sug-item">大獎對新進人員或新成立公托有失公平，建議重新設計機制</div>
+        <div class="sug-item">簽到禮（普獎）品質希望提升，期望精美且實用</div>
+      </div>
+    </div>
+
+    <!-- 正面回饋全部 -->
+    <div class="card" style="margin-top:20px;">
+      <div class="card-title">🌟 參與者回饋（全部）</div>
+      <div class="quote-count-badge">💬 共 <span id="quoteCount"></span> 則回饋</div>
+      <div class="quote-scroll" id="quoteContainer"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  2026 早教協會春酒滿意度調查分析報告 ／ 有效回覆 377 份 ／ 42 個單位 ／ 調查期間 2026 年 3 月
+</footer>
+
+<script>
+// ── 共用設定 ──
+const COLORS = {
+  blue:   '#2563a8',
+  green:  '#16a34a',
+  yellow: '#eab308',
+  red:    '#dc2626',
+  orange: '#ea580c',
+  purple: '#7c3aed',
+  teal:   '#0d9488',
+  gray:   '#9ca3af',
+};
+Chart.defaults.font.family = "'Noto Sans TC', Arial, sans-serif";
+Chart.defaults.font.size   = 12;
+
+// ── 1. 整體滿意度 橫向條形圖 ──
+new Chart(document.getElementById('satChart'), {
+  type: 'bar',
+  data: {
+    labels: ['1星', '2星', '3星', '4星', '5星'],
+    datasets: [{
+      label: '人數',
+      data: [3, 11, 68, 146, 149],
+      backgroundColor: ['#ef4444','#f97316','#eab308','#22c55e','#16a34a'],
+      borderRadius: 6,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.raw} 人（${(ctx.raw/377*100).toFixed(1)}%）`
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: '#f0f0f0' }, ticks: { stepSize: 20 } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// ── 2. 餐廳服務 堆疊橫向條 ──
+new Chart(document.getElementById('serviceChart'), {
+  type: 'bar',
+  data: {
+    labels: ['整體用餐環境','其他設施','整體服務態度','上餐服務','菜色','停車/消磁'],
+    datasets: [
+      { label: '符合',   data:[315,287,283,258,227,142], backgroundColor:'#16a34a', borderRadius: 4 },
+      { label: '無意見', data:[53, 86, 69, 81, 96, 226], backgroundColor:'#eab308' },
+      { label: '不符合', data:[9,   4, 25, 38, 54,   9], backgroundColor:'#ef4444', borderRadius: 4 },
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position: 'bottom' } },
+    scales: {
+      x: { stacked: true, max: 377, grid: { color: '#f0f0f0' } },
+      y: { stacked: true, grid: { display: false } }
+    }
+  }
+});
+
+// ── 3. 簽到動線 ──
+new Chart(document.getElementById('checkinChart'), {
+  type: 'bar',
+  data: {
+    labels: ['1分','2分','3分','4分','5分'],
+    datasets: [{
+      label: '人數',
+      data: [1, 9, 84, 136, 147],
+      backgroundColor: ['#ef4444','#f97316','#eab308','#22c55e','#16a34a'],
+      borderRadius: 6, borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false } },
+      y: { grid: { color: '#f0f0f0' }, ticks: { stepSize: 30 } }
+    }
+  }
+});
+
+// ── 4. 座位安排 ──
+new Chart(document.getElementById('seatChart'), {
+  type: 'bar',
+  data: {
+    labels: ['1分','2分','3分','4分','5分'],
+    datasets: [{
+      label: '人數',
+      data: [3, 12, 77, 116, 169],
+      backgroundColor: ['#ef4444','#f97316','#eab308','#22c55e','#16a34a'],
+      borderRadius: 6, borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false } },
+      y: { grid: { color: '#f0f0f0' }, ticks: { stepSize: 30 } }
+    }
+  }
+});
+
+// ── 5. 表演節目 水平條 ──
+new Chart(document.getElementById('showChart'), {
+  type: 'bar',
+  data: {
+    labels: ['外聘表演團體','有獎問答競賽','不希望安排','團康遊戲','中心自行表演'],
+    datasets: [{
+      label: '票數',
+      data: [209, 118, 105, 84, 15],
+      backgroundColor: ['#2563a8','#16a34a','#ea580c','#7c3aed','#0d9488'],
+      borderRadius: 6, borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: '#f0f0f0' }, max: 240 },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// ── 6. 伴手禮 圓餅 ──
+new Chart(document.getElementById('giftChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['滿意', '無意見', '不滿意'],
+    datasets: [{
+      data: [169, 156, 52],
+      backgroundColor: ['#16a34a','#eab308','#ef4444'],
+      borderWidth: 3, borderColor: '#fff',
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '60%',
+    plugins: {
+      legend: { position: 'bottom' },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.label}: ${ctx.raw} 人（${(ctx.raw/377*100).toFixed(1)}%）`
+        }
+      }
+    }
+  }
+});
+
+// ── 全部正面回饋 ──
+const allPositive = [
+  '謝謝理事長、協會還有幕後所有人員，謝謝',
+  '很棒！大家辛苦了～～～',
+  '可以多一些娛樂節目😊',
+  '辛苦您們了！',
+  '一切都很棒.工作人員辛苦了',
+  '夥伴們辛苦了。本次菜色似乎和去年的相同',
+  '獎金最實在',
+  '期許年年有機票',
+  '謝謝工作人員辛苦了',
+  '可以再吃好一點',
+  '育嬰留停的夥伴可以參加',
+  '謝謝協會',
+  '這次的摸彩獎項好少喔～',
+  '很棒！辛苦大家了！',
+  '謝謝籌辦夥伴！有你們真好',
+  '謝謝你們😊',
+  '辛苦了~~感恩每一次~~',
+  '辛苦工作人員的籌備',
+  '感謝主辦單位用心籌備，讓春酒活動流程順暢、氣氛熱絡，辛苦了！',
+  '謝謝各位督導、主任，謝謝大家❤️',
+  '有表演可看',
+  '期待在中部辦春酒😍🥹，或是輪流舉辦（這次在台北，下次可以在中部舉辦）。',
+  '拍貼機熱門～但為考慮到人流量與排隊動線之影響，未來若還有類似機器…需先考慮到相關事宜。',
+  '工作人員辛苦了，活動辦的很成功，謝謝你們的付出！',
+  '2026春酒首次用兌獎卷的方式很棒',
+  '很好很順暢',
+  '很棒！非常感謝辛苦準備的大家❤️❤️',
+  '謝謝辛苦的活動籌備伙伴',
+  '辛苦了，籌辦單位',
+  '辛苦了',
+  '增設多一點獎項，最好人人有獎（加薪）',
+  '謝謝每位親力親為的工作人員',
+  '很有趣，有拍貼機可以和夥伴們一起留下紀念照片很值得，普獎禮物蠻實用又精緻的！',
+  '大家都辛苦了',
+  '謝謝辛苦的工作人員',
+  '大家辛苦了',
+  '將安慰獎改成獎金',
+  '感謝協會用心規劃及辦理，每一次的春酒都是滿滿的感動及美好的經驗與回憶，辛苦籌備小組',
+  '獎項多一些 獎金提高',
+  '覺得辦的很好！辛苦忙前忙後的籌備人員～～',
+  '工作人員很用心，覺得拍貼機很棒',
+  '時間控制的精妙，抽獎結束桌上佳餚也吃完。',
+  '很棒,辛苦了',
+  '籌備單位辛苦了，謝謝',
+  '我從來沒中過獎，或許未來可以發一個獎給重來沒中過獎的同仁也就是我來領取😂😂😂',
+  '辦得很棒！辛苦了',
+  '謝謝活動籌備夥伴辛苦準備  辛苦了😘',
+  '到桃園市舉辦。',
+  '感覺這次禮品好像少了許多',
+  '非常好',
+  '春酒活動能夠順利又熱鬧地完成，真的要感謝每一位辛苦付出的工作人員，從前期準備到活動結束都非常用心，有你們的協助才有這麼成功的活動，謝謝大家，辛苦了！😊',
+  '工作人員辛苦了，每年都很期待參加',
+  '工作人員辛苦了，謝謝你們❤️',
+  '活動辦得很用心，辛苦了，謝謝您們',
+  '謝謝各位夥伴這麼用心的準備春酒',
+  '謝謝你們的準備',
+  '謝謝幫忙的同仁',
+  '謝謝夥伴的辛苦',
+  '謝謝辛苦了',
+  '謝謝籌辦人員，辛苦了',
+  '辛苦了～～',
+  '獎品獎項可以再多一點',
+  '感謝辛苦了',
+  '協會越開越多家，但是禮品一年比一年越少，讓人越來越覺得需要犧牲自己休假日去想參加了嗎？',
+  '辛苦夥伴們了～感謝感謝🙏🏻',
+  '真的很好',
+  '很棒喔',
+  '大家辛苦了',
+  '辛苦了，謝謝你們。',
+  '讚👍🏻',
+  '辛苦了',
+  '謝謝！大家辛苦了！',
+  '普獎可以改成現金',
+  '辛苦囉！',
+  '很棒！會發現很多小巧思',
+  '很棒喔！',
+  '很棒，辛苦了。',
+  '辛苦主辦單位，謝謝🙏',
+  '大家辛苦了',
+  '很好玩，謝謝大家辛苦籌備春酒。',
+  '大家工作人員辛苦了，期許未來現金獎可以突破5000元！',
+  '感謝理事長及所有同仁的用心籌備，辛苦了！',
+  '非常好👍辛苦籌備夥伴們🙇🏻‍♀️',
+  '獎品多變化',
+  '無，很順暢玩很開心',
+  '大家辛苦了',
+  '謝謝辛苦了～',
+  '抽獎獎項🏆可以多一點',
+  '謝謝你們的規劃，辛苦了，另外這次的男主持人主持的很順暢～很厲害',
+  '辛苦籌備的所有人員，辛苦了',
+  '辛苦了',
+  '辛苦了！',
+  '謝謝您們，辛苦了！',
+  '工作人員辛苦了~~~',
+  '感謝辦理，辛苦了。',
+  '下次餐廳可以換看看其他間',
+  '謝謝你們，辛苦了',
+  '辛苦籌備夥伴的辛勞 此次抽獎方式非常有趣，明年可以繼續',
+  '我覺得有春酒跟抽獎就已經很感謝了！❤️❤️',
+  '超級棒',
+  '辛苦工作人員',
+  '來幫忙的大家辛苦了🤓',
+  '辛苦了謝謝',
+  '辛苦協會的規劃感恩有你',
+  '無，工作人員辛苦了！',
+  '辛苦了',
+  '抽獎禮物可以多一點，中獎機率有點低',
+  '辛苦了',
+  '非常的完美 時間流程掌控很好～',
+  '拍貼機很棒.可以跟同事留下共同的回憶',
+  '大家辛苦了',
+  '大家真的很用心在準備、從一開始的前置作業到結束，辛苦協會的同仁們！',
+  '春酒主題佈景、拍照機器都很用心準備，感謝為春酒付出心力的每一個工作人員，也謝謝理事長準備了這場獎勵大家工作辛苦的活動',
+  '辛苦了～謝謝你們！',
+  '禮品多一點',
+  '今年活動電子化,省時省力非常好!',
+  '謝謝協會與辛苦的工作人員',
+  '很好了',
+  '感謝協會辛苦籌備春酒👍',
+  '謝謝協會，連續兩年抽中同一個禮物',
+  '辛苦工作人員',
+  '主持人非常能帶動現場氛圍!',
+  '很感謝活動籌備夥伴用心的準備，辛苦你們了~',
+  '辛苦了!',
+  '謝謝，辛苦了',
+  '上菜流程太景湊，前面空太久，導致後面服務人員一直趕著收菜，無法好好品嚐美食。',
+  '籌辦的夥伴辛苦了，謝謝您們的用心',
+  '可更換餐廳嗎？',
+  '禮物多一點',
+  '可以好好聚餐吃飯',
+  '辛苦了謝謝！',
+  '謝謝大家一整年的付出，辛苦了！',
+  '謝謝，籌備夥伴，辛苦了',
+  '籌備團隊辛苦了~',
+  '籌備夥伴非常用心規劃，讚！',
+  '辛苦了',
+  '很棒!流程很順暢。',
+  '辛苦了',
+  '謝謝大家～妳們辛苦了！😊',
+  '籌備同仁辛苦了',
+  '很棒 謝謝☺️',
+  '都很好很棒',
+  '謝謝幕後的工作人員，辛苦了！',
+  '辛苦籌辦人員，謝謝',
+];
+
+const container = document.getElementById('quoteContainer');
+document.getElementById('quoteCount').textContent = allPositive.length;
+allPositive.forEach(text => {
+  const card = document.createElement('div');
+  card.className = 'quote-card';
+  card.textContent = '「' + text + '」';
+  container.appendChild(card);
+});
+
+// ── 7. 摸彩 & 普獎 分組條 ──
+new Chart(document.getElementById('raffleChart'), {
+  type: 'bar',
+  data: {
+    labels: ['滿意','無意見','不滿意'],
+    datasets: [
+      { label: '摸彩流程', data:[248,102,27], backgroundColor:'#2563a8', borderRadius:6 },
+      { label: '普獎',     data:[163,179,35], backgroundColor:'#16a34a', borderRadius:6 },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { position:'bottom' } },
+    scales: {
+      x: { grid:{ display:false } },
+      y: { grid:{ color:'#f0f0f0' }, max:300 }
+    }
+  }
+});
+</script>
+</body>
+</html>
